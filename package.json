@@ -2,13 +2,13 @@
   "name": "shop-backend",
   "version": "1.0.0",
   "description": "Shop E-Commerce Backend",
-  "main": "backend/server.ts",
+  "main": "src/server.ts",
   "scripts": {
-    "dev": "nodemon backend/server.ts",
-    "build": "tsc -p backend/tsconfig.json",
-    "type-check": "tsc -p backend/tsconfig.json --noEmit",
+    "dev": "nodemon src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "type-check": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/server.js",
-    "seed": "ts-node backend/database/seed.ts",
+    "seed": "ts-node src/database/seed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
