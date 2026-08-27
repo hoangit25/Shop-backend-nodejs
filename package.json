@@ -1,0 +1,49 @@
+{
+  "name": "shop-backend",
+  "version": "1.0.0",
+  "description": "Shop E-Commerce Backend",
+  "main": "backend/server.ts",
+  "scripts": {
+    "dev": "nodemon backend/server.ts",
+    "build": "tsc -p backend/tsconfig.json",
+    "type-check": "tsc -p backend/tsconfig.json --noEmit",
+    "start": "node dist/server.js",
+    "seed": "ts-node backend/database/seed.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.4",
+    "morgan": "^1.11.0",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.1.1",
+    "@types/nodemailer": "^8.0.1",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
+  }
+}
