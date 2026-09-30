@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import 'dotenv/config';
 import { seedPermissions } from '../modules/permission/seeds/permission.seed';
 import { seedRoles } from '../modules/role/seeds/role.seed';
+import { seedSuperAdmin } from '../modules/user/seeds/user.seed';
 
 async function runSeed() {
   try {
@@ -15,6 +16,7 @@ async function runSeed() {
 
     await seedPermissions();
     await seedRoles();
+    await seedSuperAdmin();
 
     console.log('Seed Completed');
     process.exit(0);

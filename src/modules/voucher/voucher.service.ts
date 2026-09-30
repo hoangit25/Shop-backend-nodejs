@@ -78,10 +78,15 @@ export class VoucherService {
   }
 
   async incrementUsedCount(voucherId: string) {
-    const voucher = await this.getById(voucherId);
-    (voucher as any).usedCount = ((voucher as any).usedCount || 0) + 1;
-    await (voucher as any).save();
-    return voucher;
+    return voucherRepository.updateById(voucherId, {
+      $inc: { usedCount: 1 } as any,
+    });
+  }
+
+  async decrementUsedCount(voucherId: string) {
+    return voucherRepository.updateById(voucherId, {
+      $inc: { usedCount: -1 } as any,
+    });
   }
 
   async update(id: string, payload: any) {

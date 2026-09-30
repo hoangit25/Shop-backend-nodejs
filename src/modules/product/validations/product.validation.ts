@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const mediaSchema = z.object({
+export const mediaSchema = z.object({
   url: z.string().min(1, 'Media URL is required'),
   thumbnailUrl: z.string().optional(),
   alt: z.string().optional(),
@@ -8,14 +8,14 @@ const mediaSchema = z.object({
   sortOrder: z.number().int().optional(),
 });
 
-const variantOptionSchema = z.object({
+export const variantOptionSchema = z.object({
   attributeId: z.string().min(1, 'Attribute ID is required'),
   attributeValueId: z.string().min(1, 'Attribute Value ID is required'),
   attributeName: z.string().min(1, 'Attribute Name is required'),
   attributeValue: z.string().min(1, 'Attribute Value is required'),
 });
 
-const variantSchema = z.object({
+export const variantSchema = z.object({
   sku: z.string().min(1, 'SKU is required'),
   barcode: z.string().optional(),
   price: z.number().nonnegative('Price must be non-negative'),

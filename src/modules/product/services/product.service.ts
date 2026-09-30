@@ -12,11 +12,20 @@ import { inventoryTransactionRepository } from '../repositories/inventory-transa
 import { InventoryTransactionType } from '../models/inventory-transaction.model';
 import { ProductStatus } from '../models/product.model';
 import { ProductVariantStatus } from '../models/product-variant.model';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  ProductQueryDto,
+  AdjustStockDto,
+  VariantDto,
+  AddVariantDto,
+  UpdateVariantDto,
+} from '../Dto';
 
 export class ProductService {
   constructor(private productRepo: ProductRepository = productRepository) {}
 
-  async create(payload: any, createdBy?: string) {
+  async create(payload: CreateProductDto, createdBy?: string) {
     const slug = payload.slug?.trim().toLowerCase();
     if (!slug) {
       throw new AppError(400, 'Slug is required.');
@@ -50,7 +59,7 @@ export class ProductService {
             tags: payload.tags ?? [],
             weight: payload.weight ?? 0,
             hasVariants: payload.hasVariants ?? false,
-            status: payload.status ? payload.status : ProductStatus.DRAFT,
+            status: payload.status ? (payload.status as ProductStatus) : ProductStatus.DRAFT,
             isActive: payload.isActive ?? true,
             createdBy: createdBy ? new Types.ObjectId(createdBy) : undefined,
           },
@@ -75,7 +84,7 @@ export class ProductService {
     return this.getById(createdProductId);
   }
 
-  async getAll(queryDto: any = {}) {
+  async getAll(queryDto: ProductQueryDto = {}) {
     const safePage = Math.max(1, Number(queryDto.page) || 1);
     const safeLimit = Math.min(100, Math.max(1, Number(queryDto.limit) || 20));
     const {
@@ -160,7 +169,7 @@ export class ProductService {
     };
   }
 
-  async getPublished(queryDto: any = {}) {
+  async getPublished(queryDto: ProductQueryDto = {}) {
     return this.getAll({
       ...queryDto,
       status: ProductStatus.PUBLISHED,
@@ -208,7 +217,7 @@ export class ProductService {
     return this.getById((product as any)._id.toString());
   }
 
-  async update(id: string, payload: any) {
+  async update(id: string, payload: UpdateProductDto) {
     if (!Types.ObjectId.isValid(id)) {
       throw new AppError(400, 'Invalid Product ID.');
     }
@@ -343,7 +352,7 @@ export class ProductService {
     return this.getById(id);
   }
 
-  async addVariant(productId: string, payload: any, createdBy?: string) {
+  async addVariant(productId: string, payload: AddVariantDto | VariantDto | any, createdBy?: string) {
     if (!Types.ObjectId.isValid(productId)) {
       throw new AppError(400, 'Invalid Product ID.');
     }
@@ -426,7 +435,7 @@ export class ProductService {
     return productVariantRepository.findById(newVariantId);
   }
 
-  async updateVariant(variantId: string, payload: any) {
+  async updateVariant(variantId: string, payload: UpdateVariantDto) {
     if (!Types.ObjectId.isValid(variantId)) {
       throw new AppError(400, 'Invalid Variant ID.');
     }
@@ -476,7 +485,7 @@ export class ProductService {
     return productVariantRepository.softDelete(variantId);
   }
 
-  async adjustStock(variantId: string, payload: any, createdBy?: string) {
+  async adjustStock(variantId: string, payload: AdjustStockDto, createdBy?: string) {
     if (!Types.ObjectId.isValid(variantId)) {
       throw new AppError(400, 'Invalid Variant ID.');
     }
@@ -493,7 +502,7 @@ export class ProductService {
 
     let transactionType = InventoryTransactionType.ADJUSTMENT;
     if (payload.type && Object.values(InventoryTransactionType).includes(payload.type as any)) {
-      transactionType = payload.type;
+      transactionType = payload.type as unknown as InventoryTransactionType;
     }
 
     let newOnHand = (inventory as any).onHand;

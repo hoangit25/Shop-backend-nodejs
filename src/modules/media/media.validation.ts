@@ -42,3 +42,9 @@ export const updateSortOrderSchema = z.object({
     sortOrder: z.number().int().min(0, 'Sort order must be >= 0'),
   }),
 });
+
+export type UploadMediaDto = z.infer<typeof uploadMediaSchema>['body'];
+export type GetMediaByOwnerDto = z.infer<typeof getMediaByOwnerSchema>['query'];
+export type UpdateAltDto = z.infer<typeof updateAltSchema>['body'];
+export type UpdateSortOrderDto = z.infer<typeof updateSortOrderSchema>['body'];
+

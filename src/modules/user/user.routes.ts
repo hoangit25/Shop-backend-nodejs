@@ -4,6 +4,7 @@ import { authorize } from '../../middlewares/authorize';
 import { validate } from '../../middlewares/validate.middleware';
 import * as userController from './user.controller';
 import {
+  createUserSchema,
   updateUserSchema,
   changePasswordSchema,
   assignRoleSchema,
@@ -21,7 +22,28 @@ router.put('/me/password', verifyToken, validate(changePasswordSchema), userCont
 
 // User administration routes
 router.get('/', verifyToken, authorize(PERMISSIONS.USER_VIEW), userController.listUsers);
+router.post(
+  '/',
+  verifyToken,
+  authorize(PERMISSIONS.USER_CREATE),
+  validate(createUserSchema),
+  userController.createUser
+);
 router.get('/:id', verifyToken, authorize(PERMISSIONS.USER_VIEW), validate(userIdParamSchema), userController.getUserById);
+router.delete(
+  '/:id',
+  verifyToken,
+  authorize(PERMISSIONS.USER_DELETE),
+  validate(userIdParamSchema),
+  userController.deleteUser
+);
+router.patch(
+  '/:id/block',
+  verifyToken,
+  authorize(PERMISSIONS.USER_BLOCK),
+  validate(userIdParamSchema),
+  userController.toggleBlock
+);
 router.post(
   '/:id/roles',
   verifyToken,

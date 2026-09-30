@@ -13,6 +13,7 @@ import storeRoutes from '../modules/store/store.routes';
 import mediaRoutes from '../modules/media/media.routes';
 import permissionRoutes from '../modules/permission/permission.routes';
 import { errorHandler } from '../middlewares/AppError.middleware';
+import { AppError } from '../common/AppError';
 
 export const indexRouter = (app: Express) => {
   const version = '/api/v1';
@@ -30,6 +31,11 @@ export const indexRouter = (app: Express) => {
   app.use(`${version}/vouchers`, voucherRoutes);
   app.use(`${version}/reviews`, reviewRoutes);
   app.use(`${version}/media`, mediaRoutes);
+
+  // 404 handler for undefined routes
+  app.use((req, _res, next) => {
+    next(AppError.NotFound(`Route not found: ${req.method} ${req.originalUrl}`, 'ROUTE_NOT_FOUND'));
+  });
 
   app.use(errorHandler);
 };

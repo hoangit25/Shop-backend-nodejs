@@ -21,7 +21,10 @@ export class BrandService {
   }
 
   async getBySlug(slug: string) {
-    const brand = await this.repository.findActiveBySlug(slug);
+    let brand = await this.repository.findActiveBySlug(slug);
+    if (!brand && slug.match(/^[0-9a-fA-F]{24}$/)) {
+      brand = await this.repository.findOne({ _id: slug, deleted: false });
+    }
     if (!brand) {
       throw AppError.NotFound('Brand not found.', 'BRAND_NOT_FOUND');
     }

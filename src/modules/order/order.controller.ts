@@ -17,13 +17,24 @@ export class OrderController {
     return ApiResponse.created(res, order, 'Order placed successfully.');
   });
 
-  getAll = asyncHandler(async (_req: Request, res: Response) => {
-    const orders = await this.service.getAll();
+  getMyOrders = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?._id?.toString();
+    const orders = await this.service.getMyOrders(userId);
+    return ApiResponse.success(res, orders);
+  });
+
+  getAll = asyncHandler(async (req: Request, res: Response) => {
+    const orders = await this.service.getAll(req.query);
     return ApiResponse.success(res, orders);
   });
 
   getById = asyncHandler(async (req: Request, res: Response) => {
-    const order = await this.service.getById(req.params.id as string);
+    const userId = (req as any).user?._id?.toString();
+    const user = (req as any).user;
+    const isStaffOrAdmin = Boolean(
+      user?.roles?.some((r: any) => r.slug === 'super-admin' || r.name === 'Super Admin')
+    );
+    const order = await this.service.getById(req.params.id as string, userId, isStaffOrAdmin);
     return ApiResponse.success(res, order);
   });
 
@@ -33,7 +44,12 @@ export class OrderController {
   });
 
   cancel = asyncHandler(async (req: Request, res: Response) => {
-    const order = await this.service.cancel(req.params.id as string);
+    const userId = (req as any).user?._id?.toString();
+    const user = (req as any).user;
+    const isStaffOrAdmin = Boolean(
+      user?.roles?.some((r: any) => r.slug === 'super-admin' || r.name === 'Super Admin')
+    );
+    const order = await this.service.cancel(req.params.id as string, userId, isStaffOrAdmin);
     return ApiResponse.success(res, order, 'Order canceled.');
   });
 

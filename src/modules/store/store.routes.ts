@@ -8,6 +8,7 @@ import { PERMISSIONS } from '../../constants/permissions';
 
 const router = Router();
 
+router.get('/', storeController.getAll);
 router.post(
   '/',
   verifyToken,
@@ -21,6 +22,7 @@ router.get(
   authorize(PERMISSIONS.STORE_VIEW),
   storeController.getMyStore
 );
+router.get('/id/:id', storeController.getById);
 router.get('/:slug', storeController.getBySlug);
 router.patch(
   '/',

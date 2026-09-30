@@ -29,8 +29,27 @@ export class StoreService {
     return store;
   }
 
+  async getAll(filter: any = {}) {
+    return this.repository.find(
+      { deleted: false, isActive: true, ...filter },
+      undefined,
+      { sort: { createdAt: -1 }, lean: true }
+    );
+  }
+
+  async getById(id: string) {
+    const store = await this.repository.findOne({ _id: id, deleted: false });
+    if (!store) {
+      throw AppError.NotFound('Store not found.', 'STORE_NOT_FOUND');
+    }
+    return store;
+  }
+
   async getBySlug(slug: string) {
-    const store = await this.repository.findActiveBySlug(slug);
+    let store = await this.repository.findActiveBySlug(slug);
+    if (!store && slug.match(/^[0-9a-fA-F]{24}$/)) {
+      store = await this.repository.findOne({ _id: slug, deleted: false });
+    }
     if (!store) {
       throw AppError.NotFound('Store not found.', 'STORE_NOT_FOUND');
     }

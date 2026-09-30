@@ -1,40 +1,30 @@
 import { Request, Response } from 'express';
-import { productOptionService } from '../services/product-option.service';
+import { ApiResponse } from '../../../common/api-response';
+import { asyncHandler } from '../../../common/async-handler';
+import { productOptionService, ProductOptionService } from '../services/product-option.service';
 
-class ProductOptionController {
-  getByProduct = async (req: Request, res: Response) => {
-    const options = await productOptionService.getByProduct(req.params.productId as string);
-    return res.json({
-      success: true,
-      data: options,
-    });
-  };
+export class ProductOptionController {
+  constructor(private service: ProductOptionService = productOptionService) {}
 
-  create = async (req: Request, res: Response) => {
-    const option = await productOptionService.create(req.params.productId as string, req.body);
-    return res.status(201).json({
-      success: true,
-      message: 'Product option created successfully.',
-      data: option,
-    });
-  };
+  getByProduct = asyncHandler(async (req: Request, res: Response) => {
+    const options = await this.service.getByProduct(req.params.productId as string);
+    return ApiResponse.success(res, options);
+  });
 
-  update = async (req: Request, res: Response) => {
-    const option = await productOptionService.update(req.params.optionId as string, req.body);
-    return res.json({
-      success: true,
-      message: 'Product option updated successfully.',
-      data: option,
-    });
-  };
+  create = asyncHandler(async (req: Request, res: Response) => {
+    const option = await this.service.create(req.params.productId as string, req.body);
+    return ApiResponse.created(res, option, 'Product option created successfully.');
+  });
 
-  delete = async (req: Request, res: Response) => {
-    await productOptionService.delete(req.params.optionId as string);
-    return res.json({
-      success: true,
-      message: 'Product option deleted successfully.',
-    });
-  };
+  update = asyncHandler(async (req: Request, res: Response) => {
+    const option = await this.service.update(req.params.optionId as string, req.body);
+    return ApiResponse.success(res, option, 'Product option updated successfully.');
+  });
+
+  delete = asyncHandler(async (req: Request, res: Response) => {
+    await this.service.delete(req.params.optionId as string);
+    return ApiResponse.message(res, 'Product option deleted successfully.');
+  });
 }
 
 export const productOptionController = new ProductOptionController();

@@ -47,13 +47,26 @@ export class ReviewService {
     return review;
   }
 
-  async getAll() {
-    return reviewRepository.find({ deleted: false });
+  async getAll(query: any = {}) {
+    const filter: any = { deleted: false, isActive: true };
+    if (query.product) {
+      filter.product = new Types.ObjectId(query.product);
+    }
+    if (query.user) {
+      filter.user = new Types.ObjectId(query.user);
+    }
+    return reviewRepository.find(filter, undefined, {
+      sort: { createdAt: -1 },
+      populate: [
+        { path: 'user', select: 'fullName avatar' },
+        { path: 'product', select: 'name slug' },
+      ],
+    });
   }
 
   async update(id: string, payload: any, userId: string) {
     const review = await this.getById(id);
-    if ((review as any).user.toString() !== userId) {
+    if ((review as any).user.toString() !== userId?.toString()) {
       throw new AppError(403, 'You may only update your own review.');
     }
     Object.assign(review, payload);
@@ -61,9 +74,9 @@ export class ReviewService {
     return review;
   }
 
-  async delete(id: string, userId: string) {
+  async delete(id: string, userId: string, isAdmin: boolean = false) {
     const review = await this.getById(id);
-    if ((review as any).user.toString() !== userId) {
+    if (!isAdmin && (review as any).user.toString() !== userId?.toString()) {
       throw new AppError(403, 'You may only delete your own review.');
     }
     (review as any).deleted = true;

@@ -18,3 +18,7 @@ export const updateReviewSchema = z.object({
     isActive: z.boolean().optional(),
   }),
 });
+
+export type CreateReviewDto = z.infer<typeof createReviewSchema>['body'];
+export type UpdateReviewDto = z.infer<typeof updateReviewSchema>['body'];
+

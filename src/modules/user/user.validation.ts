@@ -4,6 +4,18 @@ export const objectIdSchema = z
   .string()
   .regex(/^[0-9a-fA-F]{24}$/, 'ObjectId không hợp lệ');
 
+export const createUserSchema = z.object({
+  body: z.object({
+    fullName: z.string().min(2, 'Họ tên phải có ít nhất 2 ký tự'),
+    email: z.string().email('Email không hợp lệ'),
+    password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
+    phone: z.string().regex(/^(0|\+84)[0-9]{9}$/, 'Số điện thoại không hợp lệ').optional().or(z.literal('')),
+    avatar: z.string().url('URL avatar không hợp lệ').optional().or(z.literal('')),
+    roles: z.array(objectIdSchema).optional(),
+    isActive: z.boolean().optional(),
+  }),
+});
+
 export const updateUserSchema = z.object({
   body: z.object({
     fullName: z.string().min(2, 'Họ tên phải có ít nhất 2 ký tự').optional(),

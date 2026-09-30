@@ -69,6 +69,21 @@ export class UserController {
     );
     return ApiResponse.success(res, user, 'Permission override removed successfully.');
   });
+
+  createUser = asyncHandler(async (req: Request, res: Response) => {
+    const user = await this.service.createUser(req.body);
+    return ApiResponse.created(res, user, 'User created successfully.');
+  });
+
+  deleteUser = asyncHandler(async (req: Request, res: Response) => {
+    await this.service.deleteUser(req.params.id as string);
+    return ApiResponse.message(res, 'User deleted successfully.');
+  });
+
+  toggleBlock = asyncHandler(async (req: Request, res: Response) => {
+    const result = await this.service.toggleBlock(req.params.id as string);
+    return ApiResponse.success(res, result);
+  });
 }
 
 export const userController = new UserController();
@@ -81,3 +96,6 @@ export const assignRole = userController.assignRole;
 export const removeRole = userController.removeRole;
 export const setPermissionOverride = userController.setPermissionOverride;
 export const removePermissionOverride = userController.removePermissionOverride;
+export const createUser = userController.createUser;
+export const deleteUser = userController.deleteUser;
+export const toggleBlock = userController.toggleBlock;

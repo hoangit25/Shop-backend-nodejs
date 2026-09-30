@@ -30,6 +30,16 @@ export class VoucherController {
     await this.service.delete(req.params.id as string);
     return ApiResponse.message(res, 'Voucher deleted successfully.');
   });
+
+  validateVoucher = asyncHandler(async (req: Request, res: Response) => {
+    const { code, orderSubtotal } = req.body;
+    const result = await this.service.redeem(code, Number(orderSubtotal));
+    return ApiResponse.success(res, {
+      voucher: result.voucher,
+      discountAmount: result.discountAmount,
+      finalTotal: Math.max(0, Number(orderSubtotal) - result.discountAmount),
+    }, 'Áp dụng mã giảm giá thành công.');
+  });
 }
 
 export const voucherController = new VoucherController();

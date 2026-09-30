@@ -8,24 +8,15 @@ import { PERMISSIONS } from '../../constants/permissions';
 
 const router = Router();
 
+router.get('/', reviewController.getAll);
+router.get('/:id', reviewController.getById);
+
 router.post(
   '/',
   verifyToken,
   authorize(PERMISSIONS.REVIEW_CREATE),
   validate(createReviewSchema),
   reviewController.create
-);
-router.get(
-  '/',
-  verifyToken,
-  authorize(PERMISSIONS.REVIEW_VIEW),
-  reviewController.getAll
-);
-router.get(
-  '/:id',
-  verifyToken,
-  authorize(PERMISSIONS.REVIEW_VIEW),
-  reviewController.getById
 );
 router.patch(
   '/:id',
@@ -37,7 +28,6 @@ router.patch(
 router.delete(
   '/:id',
   verifyToken,
-  authorize(PERMISSIONS.REVIEW_DELETE),
   reviewController.delete
 );
 

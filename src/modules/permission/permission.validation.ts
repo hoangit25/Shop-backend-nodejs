@@ -27,3 +27,6 @@ export const updatePermissionSchema = z.object({
     isActive: z.boolean().optional(),
   }),
 });
+
+export type UpdatePermissionDto = z.infer<typeof updatePermissionSchema>['body'];
+

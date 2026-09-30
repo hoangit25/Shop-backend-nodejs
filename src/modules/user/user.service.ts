@@ -113,6 +113,53 @@ export class UserService {
     await this.repository.removePermissionOverride(userId, permissionId);
     return this.getUserById(userId);
   }
+
+  async createUser(userData: any) {
+    const existing = await UserModel.findOne({ email: userData.email.toLowerCase() });
+    if (existing) {
+      throw AppError.Conflict('Email is already registered.', 'EMAIL_EXISTS');
+    }
+
+    const user = await this.repository.create({
+      fullName: userData.fullName,
+      email: userData.email.toLowerCase(),
+      password: userData.password,
+      phone: userData.phone || '',
+      avatar: userData.avatar || '',
+      roles: (userData.roles || []).map((rId: string) => new Types.ObjectId(rId)),
+      isActive: userData.isActive !== undefined ? userData.isActive : true,
+      deleted: false,
+    });
+
+    const userObj = user.toObject ? user.toObject() : user;
+    delete (userObj as any).password;
+    return userObj;
+  }
+
+  async deleteUser(userId: string) {
+    const user = await UserModel.findOne({ _id: userId, deleted: false });
+    if (!user) {
+      throw AppError.NotFound('User not found.', 'USER_NOT_FOUND');
+    }
+
+    await this.repository.softDelete(userId);
+    return true;
+  }
+
+  async toggleBlock(userId: string) {
+    const user = await UserModel.findOne({ _id: userId, deleted: false });
+    if (!user) {
+      throw AppError.NotFound('User not found.', 'USER_NOT_FOUND');
+    }
+
+    user.isActive = !user.isActive;
+    await user.save();
+    return {
+      userId: user._id,
+      isActive: user.isActive,
+      message: user.isActive ? 'Tài khoản đã được mở khóa.' : 'Tài khoản đã bị khóa.',
+    };
+  }
 }
 
 export const userService = new UserService();

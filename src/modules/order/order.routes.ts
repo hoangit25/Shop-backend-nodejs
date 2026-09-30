@@ -23,6 +23,11 @@ router.post(
   orderController.checkout
 );
 router.get(
+  '/me',
+  verifyToken,
+  orderController.getMyOrders
+);
+router.get(
   '/',
   verifyToken,
   authorize(PERMISSIONS.ORDER_VIEW),
@@ -31,7 +36,6 @@ router.get(
 router.get(
   '/:id',
   verifyToken,
-  authorize(PERMISSIONS.ORDER_VIEW),
   orderController.getById
 );
 router.patch(
@@ -44,7 +48,6 @@ router.patch(
 router.patch(
   '/:id/cancel',
   verifyToken,
-  authorize(PERMISSIONS.ORDER_CANCEL),
   orderController.cancel
 );
 router.patch(

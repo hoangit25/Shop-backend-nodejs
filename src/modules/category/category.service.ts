@@ -36,7 +36,10 @@ export class CategoryService {
   }
 
   async getBySlug(slug: string) {
-    const category = await this.repository.findActiveBySlug(slug);
+    let category = await this.repository.findActiveBySlug(slug);
+    if (!category && slug.match(/^[0-9a-fA-F]{24}$/)) {
+      category = await this.repository.findOne({ _id: slug, deleted: false });
+    }
     if (!category) {
       throw AppError.NotFound('Category not found.', 'CATEGORY_NOT_FOUND');
     }

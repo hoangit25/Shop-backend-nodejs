@@ -31,3 +31,15 @@ export const updateVoucherSchema = z.object({
     isActive: z.boolean().optional(),
   }),
 });
+
+export const validateVoucherSchema = z.object({
+  body: z.object({
+    code: z.string().trim().min(1, 'Mã giảm giá không được để trống'),
+    orderSubtotal: z.number().min(0, 'Tổng tiền đơn hàng không hợp lệ'),
+  }),
+});
+
+export type CreateVoucherDto = z.infer<typeof createVoucherSchema>['body'];
+export type UpdateVoucherDto = z.infer<typeof updateVoucherSchema>['body'];
+export type ValidateVoucherDto = z.infer<typeof validateVoucherSchema>['body'];
+

@@ -1,1 +1,2 @@
-export * from '../../interfaces/role.interface';
+export * from './role.model';
+

@@ -1,7 +1,8 @@
 import { BaseRepository } from '../../../common/base.repository';
 import { ProductModel, IProduct, ProductStatus } from '../models/product.model';
+import { IProductRepository } from './product.repository.interface';
 
-export class ProductRepository extends BaseRepository<IProduct> {
+export class ProductRepository extends BaseRepository<IProduct> implements IProductRepository {
   constructor() {
     super(ProductModel);
   }

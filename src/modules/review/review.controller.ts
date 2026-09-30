@@ -16,8 +16,8 @@ export class ReviewController {
     return ApiResponse.created(res, review, 'Review created successfully.');
   });
 
-  getAll = asyncHandler(async (_req: Request, res: Response) => {
-    const reviews = await this.service.getAll();
+  getAll = asyncHandler(async (req: Request, res: Response) => {
+    const reviews = await this.service.getAll(req.query);
     return ApiResponse.success(res, reviews);
   });
 
@@ -34,7 +34,10 @@ export class ReviewController {
 
   delete = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req as any).user?._id;
-    await this.service.delete(req.params.id as string, userId);
+    const user = (req as any).user;
+    // Check if user is admin / staff
+    const isAdmin = Boolean(user?.roles?.some((r: any) => r.slug === 'super-admin' || r.name === 'Super Admin'));
+    await this.service.delete(req.params.id as string, userId, isAdmin);
     return ApiResponse.message(res, 'Review deleted successfully.');
   });
 }
